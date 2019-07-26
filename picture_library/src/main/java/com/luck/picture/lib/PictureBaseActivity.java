@@ -12,12 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
-
 import android.text.TextUtils;
-
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
@@ -61,7 +56,6 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
-    private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
      *
@@ -82,14 +76,9 @@ public class PictureBaseActivity extends FragmentActivity {
                 , openWhiteStatusBar);
     }
 
-    @Override
-    public Lifecycle getLifecycle() {
-        return mLifecycleRegistry;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
@@ -134,7 +123,6 @@ public class PictureBaseActivity extends FragmentActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        mLifecycleRegistry.markState(Lifecycle.State.CREATED);
         super.onSaveInstanceState(outState);
         outState.putString(PictureConfig.BUNDLE_CAMERA_PATH, cameraPath);
         outState.putString(PictureConfig.BUNDLE_ORIGINAL_PATH, originalPath);
@@ -465,7 +453,6 @@ public class PictureBaseActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
         super.onDestroy();
         dismissCompressDialog();
         dismissDialog();
@@ -578,25 +565,21 @@ public class PictureBaseActivity extends FragmentActivity {
 
     @Override
     protected void onStart() {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
         super.onStart();
     }
 
     @Override
     protected void onStop() {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
         super.onStop();
     }
 
     @Override
     protected void onResume() {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
         super.onPause();
     }
 }
